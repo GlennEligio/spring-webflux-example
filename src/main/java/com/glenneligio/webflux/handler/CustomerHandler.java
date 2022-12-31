@@ -10,13 +10,16 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Random;
+import java.util.UUID;
+
 @Service
 public class CustomerHandler {
 
     @Autowired
     private CustomerDao dao;
 
-    public Mono<ServerResponse> loadCustomer(ServerRequest request) {
+    public Mono<ServerResponse> loadCustomers(ServerRequest request) {
         Flux<Customer> customerFlux = dao.getCustomerList();
         return ServerResponse.ok().body(customerFlux, Customer.class);
     }
@@ -29,7 +32,10 @@ public class CustomerHandler {
 
     public Mono<ServerResponse> saveCustomer(ServerRequest request) {
         Mono<Customer> customerMono = request.bodyToMono(Customer.class);
-        Mono<String> transformedCustomer = customerMono.map(c -> c.getId() + ":" + c.getName());
-        return ServerResponse.ok().body(transformedCustomer, String.class);
+        Mono<Customer> transformedCustomer = customerMono.map(customer -> {
+            customer.setId(new Random().nextInt()%100);
+            return customer;
+        });
+        return ServerResponse.status(201).body(transformedCustomer, Customer.class);
     }
 }
