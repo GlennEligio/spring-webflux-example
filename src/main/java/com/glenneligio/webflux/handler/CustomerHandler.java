@@ -2,7 +2,10 @@ package com.glenneligio.webflux.handler;
 
 import com.glenneligio.webflux.dao.CustomerDao;
 import com.glenneligio.webflux.dto.Customer;
+import com.glenneligio.webflux.exceptions.ApiException;
+import com.glenneligio.webflux.exceptions.UnAuthorizedException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.server.ServerRequest;
@@ -25,9 +28,10 @@ public class CustomerHandler {
     }
 
     public Mono<ServerResponse> findCustomer(ServerRequest request) {
-        Integer id = Integer.parseInt(request.pathVariable("id"));
-        Mono<Customer> customerMono = dao.getCustomerList().filter(c -> c.getId() == id).next();
-        return ServerResponse.ok().body(customerMono, Customer.class);
+//        Integer id = Integer.parseInt(request.pathVariable("id"));
+//        Mono<Customer> customerMono = dao.getCustomerList().filter(c -> c.getId() == id).next();
+//        return ServerResponse.ok().body(customerMono, Customer.class);
+        return Mono.error(new ApiException(HttpStatus.NOT_FOUND, "You cant go to this route"));
     }
 
     public Mono<ServerResponse> saveCustomer(ServerRequest request) {
